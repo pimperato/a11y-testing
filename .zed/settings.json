@@ -1,0 +1,15 @@
+{
+  // Zed routes CSS to vscode-css-language-server, which doesn't recognize
+  // Tailwind v4 at-rules (@theme, @apply, @variant, @utility, ...). Tell
+  // the LSP to stop flagging them as unknown.
+  "lsp": {
+    "vscode-css-language-server": {
+      "settings": {
+        "css": { "lint": { "unknownAtRules": "ignore" } },
+        "scss": { "lint": { "unknownAtRules": "ignore" } },
+        "less": { "lint": { "unknownAtRules": "ignore" } },
+      },
+    },
+  },
+  "tab_size": 2,
+}

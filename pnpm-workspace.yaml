@@ -1,0 +1,21 @@
+# pnpm 11 reads package settings from here (not .npmrc).
+
+# Fail the install if Node/pnpm fall outside `engines` in package.json.
+engineStrict: true
+
+# Refuse to run if the active pnpm doesn't match the `packageManager` field —
+# this is what stops a stray pnpm 9/10 from relinking against store/v10.
+packageManagerStrict: true
+packageManagerStrictVersion: true
+
+# Explicitly gate native postinstall scripts (supply-chain lockdown).
+# Flip to true if you want @parcel/watcher's native file-watcher for `nuxt dev` HMR.
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: false
+
+minimumReleaseAgeExclude:
+  - '@playwright/test@1.61.1'
+  - playwright-core@1.61.1
+  - playwright@1.61.1
+  - '@axe-core/playwright@4.12.1'
