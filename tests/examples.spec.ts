@@ -1,14 +1,12 @@
-import AxeBuilder from '@axe-core/playwright'
-import { expect, test } from '@nuxt/test-utils/playwright'
+import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@nuxt/test-utils/playwright";
 
-test('examples page has at least one h1', async ({ page, goto }) => {
-  await goto('/examples', { waitUntil: 'hydration' })
+test("examples page has at least one h1", async ({ page, goto }) => {
+  await goto("/missing-h1", { waitUntil: "hydration" });
 
-  // axe's `page-has-heading-one` rule flags any page lacking a level-one heading.
   const results = await new AxeBuilder({ page })
-    .withRules(['page-has-heading-one'])
-    .analyze()
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
 
-  // Fails: examples.vue currently renders no <h1>.
-  expect(results.violations).toEqual([])
-})
+  expect(results.violations).toEqual([]);
+});

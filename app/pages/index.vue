@@ -6,64 +6,135 @@
 //   public/screenshots/<id>-console.png   (browser console / dev-tools error)
 //   public/screenshots/<id>-cicd.png      (CI/CD pipeline failure)
 
-const AXE_RULES_BASE = 'https://dequeuniversity.com/rules/axe/4.12'
+const AXE_RULES_BASE = "https://dequeuniversity.com/rules/axe/4.12";
 
 interface AxeRule {
-  id: string
-  title: string
-  example: string
+  id: string;
+  title: string;
+  example: string;
 }
 
 // What Playwright + Axe DOES catch — each links to its Deque rule page.
 const axeRules: AxeRule[] = [
-  { id: 'page-has-heading-one', title: 'Missing h1', example: 'A page renders with no top-level <h1>.' },
-  { id: 'heading-order', title: 'Heading hierarchy issues', example: 'Jumping from <h2> straight to <h4>.' },
-  { id: 'aria-roles', title: 'Incorrect ARIA roles', example: 'role="buton" or a role that isn’t valid for the element.' },
-  { id: 'aria-valid-attr-value', title: 'Invalid ARIA attributes', example: 'aria-expanded="yep" or aria-labelledby pointing at a missing id.' },
-  { id: 'label', title: 'Missing form labels', example: 'An <input> with no associated <label>.' },
-  { id: 'button-name', title: 'Missing button names', example: 'An icon-only <button> with no text or aria-label.' },
-  { id: 'link-name', title: 'Missing link text', example: 'An <a> wrapping only an icon, no discernible text.' },
-  { id: 'image-alt', title: 'Missing image alt text', example: 'An <img> with no alt attribute.' },
-  { id: 'document-title', title: 'Missing page title', example: 'The document has an empty or missing <title>.' },
-  { id: 'html-has-lang', title: 'Missing html lang', example: '<html> has no lang attribute.' },
-  { id: 'color-contrast', title: 'Colour contrast failures', example: 'Grey text on a white background below the 4.5:1 ratio.' },
-  { id: 'duplicate-id', title: 'Duplicate IDs', example: 'Two elements share id="email".' },
-  { id: 'iframe-title', title: 'Missing iframe titles', example: 'An <iframe> with no title attribute.' },
-  { id: 'region', title: 'Missing landmarks', example: 'Content sitting outside any <main>/<nav>/<header> landmark.' },
-]
+  {
+    id: "page-has-heading-one",
+    title: "Missing h1",
+    example: "A page renders with no top-level <h1>.",
+  },
+  {
+    id: "heading-order",
+    title: "Heading hierarchy issues",
+    example: "Jumping from <h2> straight to <h4>.",
+  },
+  {
+    id: "aria-roles",
+    title: "Incorrect ARIA roles",
+    example: 'role="buton" or a role that isn’t valid for the element.',
+  },
+  {
+    id: "aria-valid-attr-value",
+    title: "Invalid ARIA attributes",
+    example: 'aria-expanded="yep" or aria-labelledby pointing at a missing id.',
+  },
+  {
+    id: "label",
+    title: "Missing form labels",
+    example: "An <input> with no associated <label>.",
+  },
+  {
+    id: "button-name",
+    title: "Missing button names",
+    example: "An icon-only <button> with no text or aria-label.",
+  },
+  {
+    id: "link-name",
+    title: "Missing link text",
+    example: "An <a> wrapping only an icon, no discernible text.",
+  },
+  {
+    id: "image-alt",
+    title: "Missing image alt text",
+    example: "An <img> with no alt attribute.",
+  },
+  {
+    id: "document-title",
+    title: "Missing page title",
+    example: "The document has an empty or missing <title>.",
+  },
+  {
+    id: "html-has-lang",
+    title: "Missing html lang",
+    example: "<html> has no lang attribute.",
+  },
+  {
+    id: "color-contrast",
+    title: "Colour contrast failures",
+    example: "Grey text on a white background below the 4.5:1 ratio.",
+  },
+  {
+    id: "duplicate-id",
+    title: "Duplicate IDs",
+    example: 'Two elements share id="email".',
+  },
+  {
+    id: "region",
+    title: "Missing landmarks",
+    example: "Content sitting outside any <main>/<nav>/<header> landmark.",
+  },
+];
 
 // What Axe canNOT catch — these need human judgement / a detailed brief.
 const doesNotCatch: string[] = [
-  'Whether the most appropriate semantic element was chosen',
-  'Requirements over quality — does it meet the intent, not just the rule',
-  'Poorly labelled or titled components — judged individually',
-  'Poorly labelled or titled components — judged across the whole document',
-  'Poor screen-reader experience',
-  'Page structure, meaning and reading order',
-]
+  "Whether the most appropriate semantic element was chosen",
+  "Requirements over quality — does it meet the intent, not just the rule",
+  "Poorly labelled or titled components — judged individually",
+  "Poorly labelled or titled components — judged across the whole document",
+  "Poor screen-reader experience",
+  "Page structure, meaning and reading order",
+];
 
 const manualOptions = [
-  { name: 'Nuxt A11y plugin', href: 'https://nuxt.com/modules/a11y', note: 'In-app dev-time hints while you build.' },
-  { name: 'WAVE (Chrome extension)', href: 'https://chromewebstore.google.com/detail/wave-evaluation-tool/jbbplnpkjmmeebjpijfedlgcdilocofh', note: 'Visual overlay of issues on the live page.' },
-  { name: 'axe DevTools (Chrome extension)', href: 'https://chromewebstore.google.com/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd', note: 'Same engine as the Playwright tests, run by hand.' },
-  { name: 'eslint-plugin-vuejs-accessibility', href: 'https://vue-a11y.github.io/eslint-plugin-vuejs-accessibility/', note: 'Catches issues in the editor, before commit.' },
-]
+  {
+    name: "Nuxt A11y plugin",
+    href: "https://nuxt.com/modules/a11y",
+    note: "In-app dev-time hints while you build.",
+  },
+  {
+    name: "WAVE (Chrome extension)",
+    href: "https://chromewebstore.google.com/detail/wave-evaluation-tool/jbbplnpkjmmeebjpijfedlgcdilocofh",
+    note: "Visual overlay of issues on the live page.",
+  },
+  {
+    name: "axe DevTools (Chrome extension)",
+    href: "https://chromewebstore.google.com/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd",
+    note: "Same engine as the Playwright tests, run by hand.",
+  },
+  {
+    name: "eslint-plugin-vuejs-accessibility",
+    href: "https://vue-a11y.github.io/eslint-plugin-vuejs-accessibility/",
+    note: "Catches issues in the editor, before commit.",
+  },
+];
 
-const mcp = { name: 'Deque axe MCP server', href: 'https://www.deque.com/axe/mcp-server/' }
+const mcp = {
+  name: "Deque axe MCP server",
+  href: "https://www.deque.com/axe/mcp-server/",
+};
 
 // The two capture types each rule needs a screenshot for.
 const captures = [
-  { key: 'console', label: 'Browser console error' },
-  { key: 'cicd', label: 'CI/CD pipeline error' },
-]
+  { key: "console", label: "Browser console error" },
+  { key: "cicd", label: "CI/CD pipeline error" },
+];
 
-const ruleHref = (id: string) => `${AXE_RULES_BASE}/${id}?application=playwright`
-const shotPath = (id: string, key: string) => `/screenshots/${id}-${key}.png`
+const ruleHref = (id: string) =>
+  `${AXE_RULES_BASE}/${id}?application=playwright`;
+const shotPath = (id: string, key: string) => `/screenshots/${id}-${key}.png`;
 
 // Tracks screenshots that 404 so we fall back to the placeholder until the real
 // file is dropped into public/screenshots/. Add a file → it just appears.
-const missing = reactive(new Set<string>())
-const shotKey = (id: string, key: string) => `${id}-${key}`
+const missing = reactive(new Set<string>());
+const shotKey = (id: string, key: string) => `${id}-${key}`;
 </script>
 
 <template>
@@ -71,9 +142,10 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
     <header class="intro">
       <h1>Accessibility testing flow</h1>
       <p>
-        How each layer fits together for a change — what the automated tools catch,
-        what they don’t, and the manual steps that fill the gap. Each rule below has a
-        worked example plus placeholders for the console and CI/CD screenshots.
+        How each layer fits together for a change — what the automated tools
+        catch, what they don’t, and the manual steps that fill the gap. Each
+        rule below has a worked example plus placeholders for the console and
+        CI/CD screenshots.
       </p>
     </header>
 
@@ -83,7 +155,12 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
 
       <h3>
         What it catches
-        <a class="rules-link" :href="`${AXE_RULES_BASE}/`" target="_blank" rel="noopener">
+        <a
+          class="rules-link"
+          :href="`${AXE_RULES_BASE}/`"
+          target="_blank"
+          rel="noopener"
+        >
           Link to rules →
         </a>
       </h3>
@@ -97,9 +174,7 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
             </a>
           </div>
 
-          <p class="example">
-            <strong>Example:</strong> {{ rule.example }}
-          </p>
+          <p class="example"><strong>Example:</strong> {{ rule.example }}</p>
 
           <div class="shots">
             <figure v-for="cap in captures" :key="cap.key" class="shot">
@@ -111,7 +186,7 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
                 :alt="`${cap.label}: ${rule.title}`"
                 loading="lazy"
                 @error="missing.add(shotKey(rule.id, cap.key))"
-              >
+              />
               <div
                 v-else
                 class="placeholder"
@@ -122,7 +197,8 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
                 <span class="placeholder-text">{{ cap.label }}</span>
               </div>
               <figcaption>
-                {{ cap.label }} — <code>public{{ shotPath(rule.id, cap.key) }}</code>
+                {{ cap.label }} —
+                <code>public{{ shotPath(rule.id, cap.key) }}</code>
               </figcaption>
             </figure>
           </div>
@@ -138,7 +214,9 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
     <!-- 2. Manual testing -->
     <section aria-labelledby="manual-h">
       <h2 id="manual-h">2. Manual testing</h2>
-      <p class="muted">Is this required? It depends on the change — here are the options.</p>
+      <p class="muted">
+        Is this required? It depends on the change — here are the options.
+      </p>
       <ul class="cards">
         <li v-for="opt in manualOptions" :key="opt.name">
           <a :href="opt.href" target="_blank" rel="noopener">{{ opt.name }}</a>
@@ -146,8 +224,8 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
         </li>
       </ul>
       <p class="theory">
-        <strong>Theory:</strong> with a detailed story and wireframe, most label- and
-        title-text problems are mitigated before code is written.
+        <strong>Theory:</strong> with a detailed story and wireframe, most
+        label- and title-text problems are mitigated before code is written.
       </p>
     </section>
 
@@ -166,8 +244,9 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
     <section aria-labelledby="exprep-h">
       <h2 id="exprep-h">4. ExPrep Dev</h2>
       <p>
-        A detailed <code>.md</code> is provided to the AI for context, attempting to cover
-        everything in Playwright’s <em>“does not catch”</em> list above.
+        A detailed <code>.md</code> is provided to the AI for context,
+        attempting to cover everything in Playwright’s
+        <em>“does not catch”</em> list above.
       </p>
     </section>
 
@@ -180,16 +259,15 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
           <h3>Adding a feature to an existing screen</h3>
           <ol>
             <li>
-              <strong>Manual testing</strong> — review with the Chrome extension; verify
-              there are no errors or warnings.
+              <strong>Manual testing</strong> — review with the Chrome
+              extension; verify there are no errors or warnings.
               <em>(checkable item in the PR template)</em>
             </li>
             <li>
-              <strong>PR CI — Playwright</strong> — can run on push, will run in the PR.
+              <strong>PR CI — Playwright</strong> — can run on push, will run in
+              the PR.
             </li>
-            <li>
-              <strong>PR CI — MCP</strong> — will run in the PR.
-            </li>
+            <li><strong>PR CI — MCP</strong> — will run in the PR.</li>
           </ol>
         </article>
 
@@ -198,8 +276,8 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
           <ol>
             <li>All of the above, plus:</li>
             <li>
-              <strong>One-time review with a screen reader</strong> (or several) for
-              structure, meaning and reading order.
+              <strong>One-time review with a screen reader</strong> (or several)
+              for structure, meaning and reading order.
             </li>
           </ol>
         </article>
@@ -221,12 +299,30 @@ const shotKey = (id: string, key: string) => `${id}-${key}`
   color: #374151;
 }
 
-h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-h2 { margin-top: 2.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.35rem; }
-h3 { margin-top: 1.75rem; display: flex; align-items: baseline; gap: 0.75rem; }
-h4 { margin: 0; font-size: 1.05rem; }
+h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+h2 {
+  margin-top: 2.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.35rem;
+}
+h3 {
+  margin-top: 1.75rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+h4 {
+  margin: 0;
+  font-size: 1.05rem;
+}
 
-.muted { color: #6b7280; font-weight: 400; }
+.muted {
+  color: #6b7280;
+  font-weight: 400;
+}
 
 .rules-link {
   margin-left: auto;
@@ -276,7 +372,9 @@ h4 { margin: 0; font-size: 1.05rem; }
   gap: 0.85rem;
 }
 
-.shot { margin: 0; }
+.shot {
+  margin: 0;
+}
 
 /* Real screenshots: fill the column, keep their own aspect ratio — dimensions
    don't need to match a target, just capture ~900px wide for a crisp 2x. */
@@ -298,13 +396,22 @@ h4 { margin: 0; font-size: 1.05rem; }
   border: 2px dashed #cbd5e1;
   border-radius: 0.5rem;
   background: repeating-linear-gradient(
-    45deg, #f8fafc, #f8fafc 10px, #f1f5f9 10px, #f1f5f9 20px
+    45deg,
+    #f8fafc,
+    #f8fafc 10px,
+    #f1f5f9 10px,
+    #f1f5f9 20px
   );
   color: #64748b;
 }
 
-.placeholder-icon { font-size: 1.6rem; }
-.placeholder-text { font-size: 0.85rem; font-weight: 600; }
+.placeholder-icon {
+  font-size: 1.6rem;
+}
+.placeholder-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
 
 figcaption {
   margin-top: 0.35rem;
@@ -313,10 +420,17 @@ figcaption {
   text-align: center;
 }
 
-figcaption code { font-size: 0.75rem; }
+figcaption code {
+  font-size: 0.75rem;
+}
 
-.plain { padding-left: 1.2rem; color: #374151; }
-.plain li { margin: 0.3rem 0; }
+.plain {
+  padding-left: 1.2rem;
+  color: #374151;
+}
+.plain li {
+  margin: 0.3rem 0;
+}
 
 .cards {
   list-style: none;
@@ -335,7 +449,10 @@ figcaption code { font-size: 0.75rem; }
   gap: 0.2rem;
 }
 
-.cards .note { color: #6b7280; font-size: 0.88rem; }
+.cards .note {
+  color: #6b7280;
+  font-size: 0.88rem;
+}
 
 .theory {
   margin-top: 1rem;
@@ -358,10 +475,17 @@ figcaption code { font-size: 0.75rem; }
   padding: 1rem 1.2rem;
 }
 
-.flow-grid h3 { margin-top: 0; display: block; }
-.flow-grid li { margin: 0.4rem 0; }
+.flow-grid h3 {
+  margin-top: 0;
+  display: block;
+}
+.flow-grid li {
+  margin: 0.4rem 0;
+}
 
 @media (max-width: 32rem) {
-  .shots { grid-template-columns: 1fr; }
+  .shots {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
