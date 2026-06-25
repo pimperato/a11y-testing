@@ -7,7 +7,12 @@ export default defineConfig<ConfigOptions>({
   forbidOnly: !!process.env.CI,
   retries: 0,
   workers: process.env.CI ? '50%' : undefined,
-  reporter: 'html',
+  // html -> the report artifact; summary -> one consolidated table (console +
+  // GitHub job summary) instead of a per-test error dump.
+  reporter: [
+    ['html', { open: 'never' }],
+    ['./reporters/summary.ts'],
+  ],
   use: {
     trace: 'on-first-retry',
     // Target the prebuilt server started by `webServer` below. Providing `host`

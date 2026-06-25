@@ -50,6 +50,9 @@ for (const route of routes) {
     await goto(route, { waitUntil: 'hydration' })
 
     const { violations } = await new AxeBuilder({ page })
+      // The Nuxt DevTools overlay isn't part of the app — don't scan it.
+      .exclude('#nuxt-devtools-anchor')
+      .exclude('nuxt-devtools-frame')
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'])
       .analyze()
 
