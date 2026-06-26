@@ -12,7 +12,9 @@ interface Row {
   issue: string
 }
 
-const stripAnsi = (s: string) => s.replace(/\[[0-9;]*m/g, '')
+// ANSI escape = 0x1b; build via constructor so there's no literal control char.
+const ANSI = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g')
+const stripAnsi = (s: string) => s.replace(ANSI, '')
 
 // Pull the human-readable first line out of the failure (our spec sets the
 // expect() message to e.g. "There is a missing h1 tag!").

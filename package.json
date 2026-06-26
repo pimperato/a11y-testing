@@ -13,6 +13,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
@@ -32,12 +34,16 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
+    "@nuxt/eslint": "^1.16.0",
     "@playwright/test": "^1.61.1",
     "@primevue/nuxt-module": "^4.5.5",
     "@vitest/coverage-v8": "^4.1.9",
     "@vue/test-utils": "^2.4.11",
+    "eslint": "^10.5.0",
+    "eslint-plugin-vuejs-accessibility": "^2.5.0",
     "happy-dom": "^20.10.6",
     "playwright-core": "^1.61.1",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.9"
   }
 }

@@ -135,6 +135,43 @@ const shotPath = (id: string, key: string) => `/screenshots/${id}-${key}.png`;
 // file is dropped into public/screenshots/. Add a file → it just appears.
 const missing = reactive(new Set<string>());
 const shotKey = (id: string, key: string) => `${id}-${key}`;
+
+// Results of `pnpm lint` (eslint-plugin-vuejs-accessibility) on the fixture pages.
+const eslintFindings = [
+  {
+    file: "app/pages/examples/aria-role.vue",
+    loc: "5:10",
+    rule: "vuejs-accessibility/aria-role",
+    message: "Elements with ARIA roles must use a valid, non-abstract ARIA role",
+  },
+  {
+    file: "app/pages/examples/form-label.vue",
+    loc: "5:5",
+    rule: "vuejs-accessibility/form-control-has-label",
+    message:
+      "Each form element must have a programmatically associated label element",
+  },
+  {
+    file: "app/pages/examples/image-alt.vue",
+    loc: "5:5",
+    rule: "vuejs-accessibility/alt-text",
+    message:
+      "img elements must have an alt prop, either with meaningful text, or an empty string for decorative images",
+  },
+  {
+    file: "app/pages/examples/link-name.vue",
+    loc: "5:5",
+    rule: "vuejs-accessibility/anchor-has-content",
+    message:
+      "Anchors must have content and the content must be accessible by a screen reader",
+  },
+  {
+    file: "app/pages/examples/tabindex.vue",
+    loc: "5:5",
+    rule: "vuejs-accessibility/tabindex-no-positive",
+    message: "Avoid positive integer values for tabindex",
+  },
+];
 </script>
 
 <template>
@@ -186,7 +223,7 @@ const shotKey = (id: string, key: string) => `${id}-${key}`;
                 :alt="`${cap.label}: ${rule.title}`"
                 loading="lazy"
                 @error="missing.add(shotKey(rule.id, cap.key))"
-              />
+              >
               <div
                 v-else
                 class="placeholder"
@@ -211,9 +248,38 @@ const shotKey = (id: string, key: string) => `${id}-${key}`;
       </ul>
     </section>
 
-    <!-- 2. Manual testing -->
+    <!-- 2. ESLint (static a11y review) -->
+    <section aria-labelledby="eslint-h">
+      <h2 id="eslint-h">
+        2. ESLint <span class="muted">(static a11y review)</span>
+      </h2>
+      <p class="muted">
+        Output of <code>pnpm lint</code> via
+        <code>eslint-plugin-vuejs-accessibility</code> — caught in the editor /
+        pre-commit, before anything renders.
+      </p>
+
+      <ul class="lint-list">
+        <li v-for="f in eslintFindings" :key="f.file" class="lint-item">
+          <div class="lint-head">
+            <span class="lint-badge">error</span>
+            <code class="lint-file">{{ f.file }}:{{ f.loc }}</code>
+            <code class="lint-rule">{{ f.rule }}</code>
+          </div>
+          <p class="lint-msg">{{ f.message }}</p>
+        </li>
+      </ul>
+
+      <p class="theory">
+        <strong>{{ eslintFindings.length }} problems.</strong> A subset of the
+        Axe run — ESLint reads source <em>templates</em> (static), Axe reads the
+        rendered <em>DOM</em> (runtime: contrast, focus order, …).
+      </p>
+    </section>
+
+    <!-- 3. Manual testing -->
     <section aria-labelledby="manual-h">
-      <h2 id="manual-h">2. Manual testing</h2>
+      <h2 id="manual-h">3. Manual testing</h2>
       <p class="muted">
         Is this required? It depends on the change — here are the options.
       </p>
@@ -229,9 +295,9 @@ const shotKey = (id: string, key: string) => `${id}-${key}`;
       </p>
     </section>
 
-    <!-- 3. MCP -->
+    <!-- 4. MCP -->
     <section aria-labelledby="mcp-h">
-      <h2 id="mcp-h">3. MCP</h2>
+      <h2 id="mcp-h">4. MCP</h2>
       <ul class="cards">
         <li>
           <a :href="mcp.href" target="_blank" rel="noopener">{{ mcp.name }}</a>
@@ -240,9 +306,9 @@ const shotKey = (id: string, key: string) => `${id}-${key}`;
       </ul>
     </section>
 
-    <!-- 4. ExPrep Dev -->
+    <!-- 5. ExPrep Dev -->
     <section aria-labelledby="exprep-h">
-      <h2 id="exprep-h">4. ExPrep Dev</h2>
+      <h2 id="exprep-h">5. ExPrep Dev</h2>
       <p>
         A detailed <code>.md</code> is provided to the AI for context,
         attempting to cover everything in Playwright’s
@@ -250,9 +316,9 @@ const shotKey = (id: string, key: string) => `${id}-${key}`;
       </p>
     </section>
 
-    <!-- 5. Realistic flow -->
+    <!-- 6. Realistic flow -->
     <section aria-labelledby="flow-h">
-      <h2 id="flow-h">5. Realistic flow</h2>
+      <h2 id="flow-h">6. Realistic flow</h2>
 
       <div class="flow-grid">
         <article>
@@ -328,6 +394,57 @@ h4 {
   margin-left: auto;
   font-size: 0.85rem;
   font-weight: 400;
+}
+
+/* ESLint a11y review findings */
+.lint-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.lint-item {
+  border: 1px solid #fecaca;
+  border-left: 4px solid #ef4444;
+  border-radius: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  background: #fef2f2;
+}
+
+.lint-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.lint-badge {
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.05rem 0.4rem;
+  border-radius: 0.3rem;
+}
+
+.lint-file {
+  font-size: 0.85rem;
+  color: #1f2937;
+}
+
+.lint-rule {
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+.lint-msg {
+  margin: 0.4rem 0 0;
+  color: #374151;
 }
 
 .rule-list {

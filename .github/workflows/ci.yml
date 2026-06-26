@@ -12,6 +12,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: Lint (ESLint — Vue/Nuxt/TS + a11y)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      # postinstall runs `nuxt prepare`, which generates .nuxt/eslint.config.mjs.
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+
   unit:
     name: Unit + Nuxt tests (vitest)
     runs-on: ubuntu-latest
